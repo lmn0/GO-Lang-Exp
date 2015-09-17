@@ -1,0 +1,30 @@
+Defer is a method to delay the execution of a function. Defer pushes a function call onto a list. The list of saved calls is executed after the surrounding function returns. Generally used for clean-up functions. Deferred functions calls are executed in LIFO order. For example
+func test(){
+defer method1()
+method2()
+}
+Here the function method1() will be executed after method2(). Deferred functions are executed before any return statements and also if a runtime panic occurs. 
+
+
+Panic is caused by runtime errors. Panic can also be called by functions. When panic happens, all the deferred functions in the calling function is exectued and the function returns to its caller. The process continues up the stack. All the functions in current goroutine is returned before the program exits. 
+
+
+Recover is used to recover from panicing function. Its like catch statement in Java, where the execeptions are caught.  It is used inside a  deferred function. This is used to resume normal execution of the program. If defer is not used, then the recover function will never be reached. 
+
+Runtime error like index array out of bond exception can also be handled using recover. For example:
+
+func runtime(){
+	defer func(){
+		str:=recover()
+		fmt.Println(str)
+	}()
+	a:=[]int{1,2,3}
+	fmt.Println(a[4])
+}
+func main(){
+	fmt.Println("Calling function runtimeerror")
+	runtime()
+	fmt.Println("Done!")
+}
+
+In this case, the program recovers from out of bound exception and continues the execution of main to print "Done!" instead of exiting the program.
